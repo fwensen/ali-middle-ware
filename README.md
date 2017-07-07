@@ -4,7 +4,7 @@
 
 ## 一. 初赛：《基于Open-Messaging实现进程内消息引擎》  
 出题者的初衷应该是让大家去了解他们自己家的RocketMQ。  
-该题目是实现进程内的消息引擎，类似于Kafka/RocketMQ，使用磁盘作持久化介质(我不太了解RokectMQ, 其大致思想和kafka类似，毕竟RocketMQ以kafka为原本实现的),kafka中每个Topic分为多个Partition, 每个Partition分成多个Segment, 消息虽然不能保证全局顺序性，但在同一Partition内能保证顺序性，其实现主要是append log，即同一个Partition的消息Partition文件尾部。所以这给出了本题的一个解决思路：要保证同一个Producer消息的顺序性，肯定得写入同一个文件，只是这个"同一个文件"有着不同的实现方式。  
+该题目是实现进程内的消息引擎，类似于Kafka/RocketMQ，使用磁盘作持久化介质(我不太了解RokectMQ, 其大致思想和kafka类似，毕竟RocketMQ以kafka为原本实现的),kafka中每个Topic分为多个Partition, 每个Partition分成多个Segment,见[Kafka文件存储机制那些事](https://tech.meituan.com/kafka-fs-design-theory.html)， 消息虽然不能保证全局顺序性，但在同一Partition内能保证顺序性，其实现主要是append log，即同一个Partition的消息Partition文件尾部。所以这给出了本题的一个解决思路：要保证同一个Producer消息的顺序性，肯定得写入同一个文件，只是这个"同一个文件"有着不同的实现方式。  
 ### 实现方式  
 ####  1. 全局一个文件   
 这种方式好处在于读取时可顺序读取文件，同时可以利用到Linux的read ahead特性，这样尽量能读到Page cache中的内容。  
