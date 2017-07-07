@@ -2,9 +2,9 @@
 最终名次为初赛30名，复赛第30名，似乎是一种巧合。
 本博客文章主要讲讲自己的思路。  
 
-### 初赛：《基于Open-Messaging实现进程内消息引擎》  
+### 一 初赛：《基于Open-Messaging实现进程内消息引擎》  
 出题者的初衷应该是让大家去了解他们自己家的RocketMQ。  
-该题目是实现进程内的消息引擎，类似于Kafka/RocketMQ，使用磁盘作持久化介质(我不太了解RokectMQ, 其大致思想和kafka类似，毕竟RocketMQ以kafka为原本实现的),kafka中每个Topic分为多个Partition, 每个Partition分成多个Segment, 消息虽然不能保证全局顺序性，但在同一Partition内能保证顺序性，其实现主要是append log，即同一个Partition的消息Partition文件尾部。所以这给出了本题的一个解决思路：要保证同一个Producer消息的顺序性，肯定得写入同一个文件，只是这个同一个文件不同的实现方式。  
+该题目是实现进程内的消息引擎，类似于Kafka/RocketMQ，使用磁盘作持久化介质(我不太了解RokectMQ, 其大致思想和kafka类似，毕竟RocketMQ以kafka为原本实现的),kafka中每个Topic分为多个Partition, 每个Partition分成多个Segment, 消息虽然不能保证全局顺序性，但在同一Partition内能保证顺序性，其实现主要是append log，即同一个Partition的消息Partition文件尾部。所以这给出了本题的一个解决思路：要保证同一个Producer消息的顺序性，肯定得写入同一个文件，只是这个"同一个文件"有着不同的实现方式。  
 ####  全局一个文件   
 这种方式好处在于读取时可顺序读取文件，同时可以利用到Linux的read ahead特性，这样尽量能读到Page cache中的内容。  
 但这种方式有一个明显的缺点： 写入需要全局锁，并且当Producer越多，锁竞争越大，可扩展性很差。  
@@ -33,9 +33,9 @@
 消息的压缩包括了字段的压缩和多个消息集合的压缩，字段压缩中可将MessageHeader中的消息头字符串压缩为1到2字节大小的标志，字段的压缩还包括表示消息大小的length压缩，比如因为消息头字符串大小很小，那么length可使用byte表示...；多个消息集合的压缩即是多个消息组合后使用JDK中的压缩算法压缩后再写入文件，这种方式成效较差，因为JDK的压缩算法效率不太高，除非自己实现压缩算法。  
 
 #### 使用MappedByteBuffer
-map方式算是Java中最为高效的文件读写方式。
+map方式应该算是Java中最为高效的文件读写方式了。
 
-## 复赛：《模拟阿里双十一分布式数据同步》  
+### 二 复赛：《模拟阿里双十一分布式数据同步》  
 
 # 未完待续 
 
